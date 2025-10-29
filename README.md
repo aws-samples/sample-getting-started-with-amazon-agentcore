@@ -27,7 +27,7 @@ Amazon Bedrock AgentCore enables developers to accelerate AI agents into product
 
 ## Prerequisites
 
-Before starting any lab, ensure you have:
+Before starting, ensure you have:
 - [AWS Account](https://aws.amazon.com/account/) with [appropriate permissions](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html)
 - Python 3.10+ installed
 - [AWS CLI configured](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
@@ -41,7 +41,7 @@ Before starting any lab, ensure you have:
 | **02 - [Amazon Bedrock AgentCore Memory](./02-agentcore-memory/)** | Context-aware memory for conversation context and cross-session knowledge retention | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
 ---
 
-## Detailed Lab Descriptions
+## Descriptions
 
 | 📓 Services | 🎯 Focus & Key Learning | 🖼️ Diagram |
 |-------------|------------------------|-------------|

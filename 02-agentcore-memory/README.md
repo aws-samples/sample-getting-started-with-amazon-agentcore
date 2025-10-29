@@ -1,4 +1,4 @@
-# Amazon Bedrock AgentCore Memory Lab
+# Amazon Bedrock AgentCore Memory
 
 Add intelligent memory capabilities to AI agents with Amazon Bedrock AgentCore Memory.
 
