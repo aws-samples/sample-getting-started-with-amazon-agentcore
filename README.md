@@ -1,11 +1,77 @@
-## My Project
+# Starting with Amazon Bedrock AgentCore
 
-TODO: Fill this README out!
+<div align="center">
+  <br>
+  <p><em>Bring AI agents into production in minutes with Amazon Bedrock AgentCore</em>
+</div>
 
-Be sure to:
+This repository contains hands-on labs demonstrating the capabilities of [Amazon Bedrock AgentCore](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html), an agentic platform to build, deploy and operate agents securely at scale - using any framework and model.
 
-* Change the title in this README
-* Edit your repository description on GitHub
+## What is Amazon Bedrock AgentCore?
+
+Amazon Bedrock AgentCore enables developers to accelerate AI agents into production with enterprise-grade scale, reliability, and security. AgentCore provides composable services that work with popular open-source frameworks and any model, eliminating the choice between open-source flexibility and enterprise requirements.
+
+### AgentCore Services Overview
+
+![agentcore_overview](images/agentcore_overview.png)
+
+| Service | Purpose | Key Features |
+|---------|---------|--------------|
+| **AgentCore Runtime⭐** | Serverless execution | Auto-scaling, session management, container orchestration |
+| **AgentCore Identity** | Credential management | API keys, OAuth tokens, secure vault |
+| **AgentCore Memory⭐** | State persistence | Short-term memory, long-term storage |
+| **AgentCore Gateway** | Connects agent to tools and data | Tool discovery, service integration |
+| **AgentCore Code Interpreter** | Code execution | Secure sandbox, data analysis |
+| **AgentCore Browser** | Web interaction | Cloud browser, auto-scaling |
+| **AgentCore Observability** | Monitoring | Tracing, dashboards, debugging |
+
+## Prerequisites
+
+Before starting any lab, ensure you have:
+- [AWS Account](https://aws.amazon.com/account/) with [appropriate permissions](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html)
+- Python 3.10+ installed
+- [AWS CLI configured](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- Basic understanding of [AI agents](https://aws.amazon.com/what-is/ai-agents/) and [AWS services](https://aws.amazon.com/what-is-aws/)
+
+## Overview
+
+| 📓 Services | 🎯 Focus & Key Learning | ⏱️ Time | 📊 Level |
+|-------------|------------------------|----------|----------|
+| **01 - [Amazon Bedrock AgentCore Runtime](./01-agentcore-runtime/)** | Serverless AI agent deployment with auto-scaling, session management, and built-in security | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
+| **02 - [Amazon Bedrock AgentCore Memory](./02-agentcore-memory/)** | Context-aware memory for conversation context and cross-session knowledge retention | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
+---
+
+## Detailed Lab Descriptions
+
+| 📓 Services | 🎯 Focus & Key Learning | 🖼️ Diagram |
+|-------------|------------------------|-------------|
+| **Amazon Bedrock AgentCore Runtime** | **Focus**: [Serverless AI Agent Deployment](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-how-it-works.html)<br><br>Deploy production-ready AI agents with just 2 commands using AgentCore Runtime. This lab demonstrates:<br>• Serverless agent deployment with auto-scaling<br>• Session management and isolation<br>• Built-in security and authentication<br>• Integration with Strands Agents framework<br><br>**Key Learning**: Transform prototype agents into production-ready services in minutes, not weeks. | ![image](images/lab_01_runtime.png) |
+| **Amazon Bedrock AgentCore Memory** | **Focus**: [Intelligent Memory Capabilities](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)<br><br>Add context-aware memory to AI agents using AgentCore Memory. This lab covers:<br>• Short-term memory for conversation context<br>• Long-term memory for user preferences<br>• Cross-session knowledge retention<br>• Personalized agent experiences<br><br>**Key Learning**: Build agents that remember and learn from interactions to provide more intelligent responses. | ![memory](images/high_level_memory.png) |
+
+## Getting Started
+
+Each lab includes:
+- **Prerequisites**: Required setup and dependencies
+- **Step-by-step deployment**: Automated infrastructure setup
+- **Code explanations**: Detailed implementation walkthrough
+- **Cleanup instructions**: Resource removal
+
+**Ready to deploy production AI agents?** Start with [01-agentcore-runtime](./01-agentcore-runtime/) to learn the fundamentals of AgentCore Runtime.
+
+## Resources
+
+### Documentation
+- [What is Amazon Bedrock AgentCore?](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html)
+- [AgentCore Runtime How It Works](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-how-it-works.html)
+- [AgentCore Memory Guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)
+- [AgentCore Gateway Documentation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html)
+- [Programmatic Agent Invocation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-toolkit.html#invoke-programmatically)
+
+
+### Code Examples
+- [AWS Labs AgentCore Samples](https://github.com/awslabs/amazon-bedrock-agentcore-samples/)
+
+---
 
 ## Security
 
