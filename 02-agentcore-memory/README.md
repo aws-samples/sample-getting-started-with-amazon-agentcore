@@ -53,9 +53,7 @@ pip install -r requirements.txt
 
 4. **Deploy to production**
 ```bash
-# Configure with memory enabled (run from lab root directory)
-cd ..
-agentcore configure -e deployment/my_agent_memory.py
+agentcore configure -e my_agent_memory.py
 # Select 'yes' for memory
 # Select 'yes' for long-term memory extraction
 
@@ -71,20 +69,20 @@ Use the `agentcore invoke` CLI command to test memory capabilities. The CLI supp
 
 ```bash
 # Store information in a session
-agentcore invoke --session-id session1 --user-id alice '{"prompt": "My name is Alice and I love pizza"}'
+agentcore invoke --session-id session1-alice-memory-test-12345678 --user-id alice '{"prompt": "My name is Alice and I love pizza"}'
 
 # Recall information in the same session
-agentcore invoke --session-id session1 --user-id alice '{"prompt": "What is my name and what do I love?"}'
+agentcore invoke --session-id session1-alice-memory-test-12345678 --user-id alice '{"prompt": "What is my name and what do I love?"}'
 ```
 
 - **Test long-term memory (across sessions)**
 
 ```bash
 # Store preferences in session 1
-agentcore invoke --session-id session1 --user-id alice '{"prompt": "I prefer vegetarian food and work as a teacher"}'
+agentcore invoke --session-id session1-alice-memory-test-12345678 --user-id alice '{"prompt": "I prefer vegetarian food and work as a teacher"}'
 
 # Wait a moment for long-term memory extraction, then test recall in different session
-agentcore invoke --session-id session2 --user-id alice '{"prompt": "What do you know about my food preferences and job?"}'
+agentcore invoke --session-id session2-alice-memory-test-87654321 --user-id alice '{"prompt": "What do you know about my food preferences and job?"}'
 ```
 
 Each command uses different session IDs to simulate different conversations, while the same user ID enables cross-session memory.
@@ -105,7 +103,7 @@ from bedrock_agentcore.memory import MemoryClient
 from bedrock_agentcore.memory.integrations.strands.config import AgentCoreMemoryConfig, RetrievalConfig
 
 # Create memory client
-client = MemoryClient(region_name="us-east-1") #your region
+client = MemoryClient(region_name="us-west-2") #your region
 
 # Create memory store
 basic_memory = client.create_memory(
@@ -163,6 +161,51 @@ def invoke(payload, context):
     result = agent(prompt)
     return {"response": result.message}
 ```
+
+## Step 8: Test Memory with Python Applications (Optional)
+
+For more comprehensive testing, you can use the provided test applications that demonstrate both short-term and long-term memory capabilities.
+
+### Test Short-term Memory
+
+Use the `test_short_memory.py` application to test memory within the same session:
+
+```bash
+# Set your agent ARN (get from agentcore status)
+export AGENT_ARN="YOUR-ARN"
+
+# Run the short-term memory test
+python test_short_memory.py
+```
+
+This script will test:
+- Information storage within a session
+- Memory recall in the same session
+- Session-based context retention
+
+### Test Long-term Memory
+
+Use the `test_long_memory.py` application to test memory persistence across different sessions:
+
+```bash
+# Set your agent ARN (get from agentcore status)
+export AGENT_ARN="YOUR-ARN"
+
+# Run the long-term memory test
+python test_long_memory.py
+```
+
+This script will test:
+- Information storage in one session
+- Memory extraction and persistence
+- Cross-session memory recall
+- User-specific memory isolation
+
+**Key Points for Memory Testing:**
+- **Agent ARN**: Get this from `agentcore status` output
+- **Session IDs**: Must be 33+ characters for proper session management
+- **User IDs**: Enable user-specific memory isolation
+- **Wait Time**: Allow time between sessions for long-term memory extraction
 
 ## Clean Up
 
