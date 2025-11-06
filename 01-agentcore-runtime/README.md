@@ -6,15 +6,15 @@ Deploy production-ready AI agents in minutes with Amazon Bedrock AgentCore Runti
 
 Amazon Bedrock AgentCore is a suite of services that simplifies deploying AI agents to production. Instead of weeks configuring infrastructure, you get production-ready agents with just 2 commands.
 
-### Amazon Bedrock AgentCore Services
+### AgentCore Services
 
-- **Amazon Bedrock AgentCore Runtime** ⭐ - Serverless execution with auto-scaling and session management
-- **Amazon Bedrock AgentCore Identity** - Secure credential management for API keys and tokens  
-- **Amazon Bedrock AgentCore Memory** - State persistence and conversation history
-- **Amazon Bedrock AgentCore Code Interpreter** - Secure code execution sandbox
-- **Amazon Bedrock AgentCore Browser** - Cloud browser automation
-- **Amazon Bedrock AgentCore Gateway** - API management and tool discovery
-- **Amazon Bedrock AgentCore Observability** - Monitoring, tracing, and debugging
+- **AgentCore Runtime** ⭐ - Serverless execution with auto-scaling and session management
+- **AgentCore Identity** - Secure credential management for API keys and tokens  
+- **AgentCore Memory** - State persistence and conversation history
+- **AgentCore Code Interpreter** - Secure code execution sandbox
+- **AgentCore Browser** - Cloud browser automation
+- **AgentCore Gateway** - API management and tool discovery
+- **AgentCore Observability** - Monitoring, tracing, and debugging
 
 ## Calculator Agent with AgentCore Runtime
 
@@ -180,7 +180,7 @@ The agent includes a calculator tool from `strands-tools` for performing mathema
 Start the local development server:
 
 ```bash
-python my_agent.py
+python deployment/my_agent.py
 ```
 
 The server will start on `http://localhost:8080` and display startup logs. Keep this terminal open - the server needs to stay running for testing.
@@ -216,7 +216,8 @@ The AgentCore starter toolkit will automatically create all necessary AWS resour
 Run the configuration command from the lab root directory (containing the `deployment/` folder):
 
 ```bash
-agentcore configure -e deployment/my_agent.py
+cd deployment
+agentcore configure -e my_agent.py
 ```
 
 The CLI tool will automatically detect `requirements.txt` in the same directory as the entrypoint file.
