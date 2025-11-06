@@ -27,11 +27,25 @@ Amazon Bedrock AgentCore enables developers to accelerate AI agents into product
 
 ## Prerequisites
 
-Before starting, ensure you have:
+Before starting any lab, ensure you have:
 - [AWS Account](https://aws.amazon.com/account/) with [appropriate permissions](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html)
 - Python 3.10+ installed
 - [AWS CLI configured](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 - Basic understanding of [AI agents](https://aws.amazon.com/what-is/ai-agents/) and [AWS services](https://aws.amazon.com/what-is-aws/)
+
+### Optional: Using uv for Python Project Management
+
+For faster Python dependency management, consider using [uv](https://docs.astral.sh/uv/) instead of traditional `pip` and `venv`:
+
+```bash
+# Install dependencies with uv (faster alternative to pip)
+uv pip install -r requirements.txt
+
+# Or initialize projects with uv
+uv init my-agent-project
+```
+
+This is optional - all labs work with standard `pip` commands as documented.
 
 ## Overview
 
@@ -41,7 +55,7 @@ Before starting, ensure you have:
 | **02 - [Amazon Bedrock AgentCore Memory](./02-agentcore-memory/)** | Context-aware memory for conversation context and cross-session knowledge retention | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
 ---
 
-## Descriptions
+## Detailed Lab Descriptions
 
 | 📓 Services | 🎯 Focus & Key Learning | 🖼️ Diagram |
 |-------------|------------------------|-------------|
@@ -72,12 +86,4 @@ Each lab includes:
 - [AWS Labs AgentCore Samples](https://github.com/awslabs/amazon-bedrock-agentcore-samples/)
 
 ---
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
-
-## License
-
-This library is licensed under the MIT-0 License. See the LICENSE file.
 

@@ -45,7 +45,7 @@ def invoke(payload):
     result = agent(user_message)
 
     # Return the agent's response in the expected format
-    return {"result": result.message}
+    return {"response": result.message.get('content', [{}])[0].get('text', str(result))}
 
 # Execute the application when the script is run directly
 if __name__ == "__main__":

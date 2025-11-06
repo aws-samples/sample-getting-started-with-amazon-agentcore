@@ -14,7 +14,7 @@ Amazon Bedrock AgentCore is a suite of services that simplifies deploying AI age
 - **Amazon Bedrock AgentCore Code Interpreter** - Secure code execution sandbox
 - **Amazon Bedrock AgentCore Browser** - Cloud browser automation
 - **Amazon Bedrock AgentCore Gateway** - API management and tool discovery
-- **Amazon BedrockAgentCore Observability** - Monitoring, tracing, and debugging
+- **Amazon Bedrock AgentCore Observability** - Monitoring, tracing, and debugging
 
 ## Calculator Agent with AgentCore Runtime
 
@@ -70,11 +70,9 @@ Enter your credentials:
 
 ## Step 2: Set Up Project and Install Dependencies
 
-Create a project folder and install the required packages:
+Set up your Python environment and install the required packages:
 
 ```bash
-mkdir agentcore-calculator-agent
-cd agentcore-calculator-agent
 python3 -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
@@ -179,20 +177,35 @@ The agent includes a calculator tool from `strands-tools` for performing mathema
 
 ## Step 5: Test Locally 
 
+Start the local development server:
+
 ```bash
 python my_agent.py
 ```
 
-Test
+The server will start on `http://localhost:8080` and display startup logs. Keep this terminal open - the server needs to stay running for testing.
+
+**Test the calculator agent** (open a new terminal):
 
 ```bash
 # In another terminal, test with curl
 curl -X POST http://localhost:8080/invocations \
   -H "Content-Type: application/json" \
   -d '{
-    "prompt": "Hello world!"
+    "prompt": "What is 25 * 4?"
   }'
 ```
+
+**Test with another calculation:**
+```bash
+curl -X POST http://localhost:8080/invocations \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Calculate 15 + 27"
+  }'
+```
+
+**To stop the server:** Press `Ctrl+C` in the terminal running the agent.
 
 ## Step 6: Configure and Deploy to AgentCore Runtime
 
@@ -200,9 +213,13 @@ The AgentCore starter toolkit will automatically create all necessary AWS resour
 
 ### Configure the Agent
 
+Run the configuration command from the lab root directory (containing the `deployment/` folder):
+
 ```bash
-agentcore configure -e my_agent.py
+agentcore configure -e deployment/my_agent.py
 ```
+
+The CLI tool will automatically detect `requirements.txt` in the same directory as the entrypoint file.
 
 When prompted:
 - **Execution Role**: Press Enter to auto-create a role with minimal required permissions
@@ -303,17 +320,21 @@ The script will test:
 
 For more troubleshooting information, see [Troubleshoot Amazon Bedrock AgentCore Runtime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/troubleshoot-runtime.html).
 
-## Step 9: Deploy with AWS SDK Python Boto3
+## Step 9: Programmatic Deployment (Optional)
 
-Deploy agents using with the [create_agent_runtime](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/bedrock-agentcore-control/client/create_agent_runtime.html) operation from AWS SDK Python Boto3.
+For automation scenarios like CI/CD pipelines, you can deploy agents programmatically using the starter toolkit's Python interface instead of the CLI commands.
+
+The `deploy_my_agent.py` script uses the `bedrock_agentcore_starter_toolkit` Python SDK (same functionality as the CLI, called from Python code):
 
 ```bash
 # Set the agent code file
-export ENTRYPOINT="my_agent.py"
+export ENTRYPOINT="deployment/my_agent.py"
 
 # Deploy the agent
 python deploy_my_agent.py
 ```
+
+This approach is useful when you need to integrate AgentCore deployment into automated workflows or when you want to customize the deployment process with additional Python logic.
 
 ## Step 10: Using Claude Anthropic Model (optional)
 
@@ -344,7 +365,7 @@ python invoke_agent.py
 
 To learn how to deploy with other model providers using Strands Agents, check out the [Strands Agents documentation](https://strandsagents.com/latest/documentation/docs/user-guide/concepts/model-providers/amazon-bedrock/).
 
-## Step 10: Clean Up
+## Step 11: Clean Up
 
 When you're done experimenting, clean up all resources:
 

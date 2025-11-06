@@ -49,6 +49,21 @@ Thumbs.db
 .bedrock_agentcore/
 .bedrock_agentcore.yaml
 
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.yaml
+*.dockerfile
+
+# YAML configuration files
+config.yml
+config.yaml
+configuration.yml
+configuration.yaml
+settings.yml
+settings.yaml
+
 # AWS
 .aws/
 *.pem

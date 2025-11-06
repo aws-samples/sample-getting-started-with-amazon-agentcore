@@ -1,4 +1,4 @@
-# Amazon Bedrock AgentCore Memory
+# Amazon Bedrock AgentCore Memory Lab
 
 Add intelligent memory capabilities to AI agents with Amazon Bedrock AgentCore Memory.
 
@@ -13,7 +13,7 @@ Amazon Bedrock AgentCore Memory is a fully managed service that gives your AI ag
 - **AgentCore Memory** ⭐ - State persistence and conversation history
 - **AgentCore Code Interpreter** - Secure code execution sandbox
 - **AgentCore Browser** - Cloud browser automation
-- **AgentCore Gateway** - API management and tool discovery
+- **AgentCore Gateway** - Connects agent to tools and data
 - **AgentCore Observability** - Monitoring, tracing, and debugging
 
 ## This Lab: AgentCore Memory
@@ -35,15 +35,27 @@ Automatically extracts and stores key insights from conversations across multipl
 - [AWS CLI configured](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 - Basic understanding of [AI agents](https://aws.amazon.com/what-is/ai-agents/) and [AWS services](https://aws.amazon.com/what-is-aws/)
 
-1. **Install dependencies**
+1. **Navigate to Lab02 directory**
+```bash
+cd 02-agentcore-memory
+```
+
+2. **Create deployment folder**
+```bash
+mkdir deployment
+cd deployment
+```
+
+3. **Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-2. **Deploy to production**
+4. **Deploy to production**
 ```bash
-# Configure with memory enabled
-agentcore configure -e my_agent_memory.py
+# Configure with memory enabled (run from lab root directory)
+cd ..
+agentcore configure -e deployment/my_agent_memory.py
 # Select 'yes' for memory
 # Select 'yes' for long-term memory extraction
 
@@ -53,44 +65,39 @@ agentcore launch
 
 3. **Test memory functionality**
 
-The test scripts use boto3 to programmatically invoke your deployed agent via the [`InvokeAgentRuntime`](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html) operation. This allows automated testing of memory capabilities across different sessions.
+Use the `agentcore invoke` CLI command to test memory capabilities. The CLI supports `--session-id` and `--user-id` flags for testing different memory scenarios.
 
-- Test short-term memory (within session)
-
-```bash
-python test_short_memory.py "AGENT_ARN"
-
-# This test:
-# 1. Stores user info in a session
-# 2. Asks agent to recall info in same session
-# 3. Verifies context in a single session
-```
-
-- Test long-term memory (across sessions)
+- **Test short-term memory (within session)**
 
 ```bash
-python test_long_memory.py "AGENT_ARN"
+# Store information in a session
+agentcore invoke --session-id session1 --user-id alice '{"prompt": "My name is Alice and I love pizza"}'
 
-# This test:
-# 1. Stores user preferences in session 1
-# 2. Tests recall in different session 2
-# 3. Verifies cross-session memory
+# Recall information in the same session
+agentcore invoke --session-id session1 --user-id alice '{"prompt": "What is my name and what do I love?"}'
 ```
 
-- Or using environment variables
+- **Test long-term memory (across sessions)**
+
 ```bash
-export AGENT_ARN="your-agent-arn"
-python test_short_memory.py
-python test_long_memory.py
+# Store preferences in session 1
+agentcore invoke --session-id session1 --user-id alice '{"prompt": "I prefer vegetarian food and work as a teacher"}'
+
+# Wait a moment for long-term memory extraction, then test recall in different session
+agentcore invoke --session-id session2 --user-id alice '{"prompt": "What do you know about my food preferences and job?"}'
 ```
 
-Each test creates unique session IDs to simulate different user interactions.
+Each command uses different session IDs to simulate different conversations, while the same user ID enables cross-session memory.
 
 >The tests use the AWS SDK to call `bedrock-agentcore:InvokeAgentRuntime`, requiring your agent ARN and appropriate permissions. 
 
 ## Memory Configuration
 
 The agent uses [AgentCore Memory SDK](https://github.com/aws/bedrock-agentcore-sdk-python/tree/main/src/bedrock_agentcore/memory) for integration with Strands Agents.
+
+### Automatic Memory Setup
+
+When you run `agentcore configure` and enable memory, the AgentCore CLI automatically creates the memory resource (if needed) and sets the `BEDROCK_AGENTCORE_MEMORY_ID` environment variable during `agentcore launch`. Your agent code reads this variable automatically - no manual configuration needed.
 
 ### Basic Memory Setup
 ```python
@@ -162,12 +169,6 @@ def invoke(payload, context):
 ```bash
 agentcore destroy
 ```
-
-This removes:
-- AgentCore Runtime deployment
-- ECR repository and images
-- Auto-created IAM roles
-- CloudWatch log groups
 
 ## Resources
 

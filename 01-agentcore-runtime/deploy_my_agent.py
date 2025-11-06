@@ -10,13 +10,22 @@ def deploy():
     region = boto_session.region_name
     
     agentcore_runtime = Runtime()
-    agent_name = os.environ["ENTRYPOINT"].split(".")[0]
+    
+    # Check for required ENTRYPOINT environment variable
+    entrypoint = os.getenv("ENTRYPOINT")
+    if not entrypoint:
+        print("Error: ENTRYPOINT environment variable is required.")
+        print("Please set it before running this script:")
+        print("export ENTRYPOINT=deployment/my_agent.py")
+        exit(1)
+    
+    agent_name = entrypoint.split(".")[0]
     
     print(f"Deploying LangGraph agent to {region}...")
     
     # Configure
     agentcore_runtime.configure(
-        entrypoint=os.environ["ENTRYPOINT"],
+        entrypoint=entrypoint,
         auto_create_execution_role=True,
         auto_create_ecr=True,
         requirements_file="requirements.txt", 

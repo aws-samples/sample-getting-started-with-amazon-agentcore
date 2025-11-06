@@ -5,15 +5,15 @@ Remembers conversations and user preferences across sessions
 import os
 from strands import Agent
 from strands_tools import calculator
-from bedrock_agentcore.runtime import BedrockAgentCoreApp
+from bedrock_agentcore import BedrockAgentCoreApp
 from bedrock_agentcore.memory.integrations.strands.config import AgentCoreMemoryConfig, RetrievalConfig
 from bedrock_agentcore.memory.integrations.strands.session_manager import AgentCoreMemorySessionManager
 
 app = BedrockAgentCoreApp()
 
 MEMORY_ID = os.getenv("BEDROCK_AGENTCORE_MEMORY_ID")
-REGION = os.getenv("AWS_REGION", "us-west-2")
-MODEL_ID = "us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+REGION = os.getenv("AWS_REGION", "us-east-1")
+MODEL_ID = os.getenv("MODEL_ID", "us.anthropic.claude-3-7-sonnet-20250219-v1:0")
 
 # Global agent instance
 _agent = None
