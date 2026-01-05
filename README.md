@@ -17,13 +17,15 @@ Amazon Bedrock AgentCore enables developers to accelerate AI agents into product
 
 | Service | Purpose | Key Features |
 |---------|---------|--------------|
-| **AgentCore Runtime⭐** | Serverless execution | Auto-scaling, session management, container orchestration |
-| **AgentCore Identity** | Credential management | API keys, OAuth tokens, secure vault |
-| **AgentCore Memory⭐** | State persistence | Short-term memory, long-term storage |
-| **AgentCore Gateway** | Connects agent to tools and data | Tool discovery, service integration |
-| **AgentCore Code Interpreter** | Code execution | Secure sandbox, data analysis |
-| **AgentCore Browser** | Web interaction | Cloud browser, auto-scaling |
-| **AgentCore Observability** | Monitoring | Tracing, dashboards, debugging |
+| **[AgentCore Runtime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime.html)⭐** | Serverless execution | Auto-scaling, session management, container orchestration |
+| **[AgentCore Identity](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/identity.html)** | Credential management | API keys, OAuth tokens, secure vault |
+| **[AgentCore Memory](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)⭐** | State persistence | Short-term memory, long-term storage |
+| **[AgentCore Gateway](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html)** | Connects agent to tools and data | Tool discovery, service integration |
+| **[AgentCore Code Interpreter](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/code-interpreter-tool.html)** | Code execution | Secure sandbox, data analysis |
+| **[AgentCore Browser](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/browser-tool.html)** | Web interaction | Cloud browser, auto-scaling |
+| **[AgentCore Observability](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability.html)** | Monitoring | Tracing, dashboards, debugging |
+| **[AgentCore Policy](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy.html)** | Security boundaries | Deterministic control, Cedar policies, natural language authoring |
+| **[AgentCore Evaluations](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/evaluations.html)** | Performance assessment | Automated testing, LLM-as-a-Judge, quality metrics |
 
 ## Prerequisites
 

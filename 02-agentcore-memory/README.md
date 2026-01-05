@@ -8,13 +8,15 @@ Amazon Bedrock AgentCore Memory is a fully managed service that gives your AI ag
 
 ### AgentCore Services
 
-- **AgentCore Runtime** ⭐ - Serverless execution with auto-scaling and session management
-- **AgentCore Identity** - Secure credential management for API keys and tokens  
-- **AgentCore Memory** ⭐ - State persistence and conversation history
-- **AgentCore Code Interpreter** - Secure code execution sandbox
-- **AgentCore Browser** - Cloud browser automation
-- **AgentCore Gateway** - API management and tool discovery
-- **AgentCore Observability** - Monitoring, tracing, and debugging
+- **[AgentCore Runtime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime.html)** ⭐ - Serverless execution with auto-scaling and session management
+- **[AgentCore Identity](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/identity.html)** - Secure credential management for API keys and tokens  
+- **[AgentCore Memory](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)** ⭐ - State persistence and conversation history
+- **[AgentCore Code Interpreter](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/code-interpreter-tool.html)** - Secure code execution sandbox
+- **[AgentCore Browser](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/browser-tool.html)** - Cloud browser automation
+- **[AgentCore Gateway](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html)** - API management and tool discovery
+- **[AgentCore Observability](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability.html)** - Monitoring, tracing, and debugging
+- **[AgentCore Policy](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy.html)** - Deterministic control and security boundaries for agent-tool interactions
+- **[AgentCore Evaluations](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/evaluations.html)** - Automated assessment and performance measurement for agents
 
 ## This Lab: AgentCore Memory
 
@@ -148,6 +150,9 @@ When you run `agentcore configure` and enable memory, the AgentCore CLI automati
 from bedrock_agentcore.memory import MemoryClient
 from bedrock_agentcore.memory.integrations.strands.config import AgentCoreMemoryConfig, RetrievalConfig
 
+# HTTP headers are normalized to lowercase
+CUSTOM_HEADER_NAME = 'x-amzn-bedrock-agentcore-runtime-custom-actor-id'
+
 # Create memory client
 client = MemoryClient(region_name="us-west-2") #your region
 
@@ -193,25 +198,26 @@ The `invoke` function is the main entry point for your AgentCore agent. It:
 @app.entrypoint
 def invoke(payload, context: RequestContext):
     """AgentCore Runtime entry point with lazy-loaded agent"""
-    # Extract user prompt
-    prompt = payload.get("prompt", "Hello!")
-    
-    # Extract actor_id from custom header (HTTP headers are lowercase)
+    if not MEMORY_ID:
+        return {"error": "Memory not configured. Set BEDROCK_AGENTCORE_MEMORY_ID environment variable."}
+
+    # Extract custom header and session information
     actor_id = 'default-user'
-    if context and context.request_headers:
-        actor_id = context.request_headers.get(
-            'x-amzn-bedrock-agentcore-runtime-custom-actor-id', 
-            'default-user'
-        )
+    if context and hasattr(context, 'request_headers') and context.request_headers:
+        # Headers are normalized to lowercase
+        actor_id = context.request_headers.get(CUSTOM_HEADER_NAME)
     
     session_id = context.session_id
     
-    # Get agent with memory
+    # Get or create agent (lazy loading)
     agent = get_or_create_agent(actor_id, session_id)
     
-    # Process and return response
+    prompt = payload.get("prompt", "Hello!")
     result = agent(prompt)
-    return {"response": result.message}
+    
+    return {
+        "response": result.message.get('content', [{}])[0].get('text', str(result))
+    }
 ```
 
 ## Step 8: Test Memory with Python Applications (Optional)
