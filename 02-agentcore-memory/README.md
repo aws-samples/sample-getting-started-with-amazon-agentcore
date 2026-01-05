@@ -61,6 +61,23 @@ agentcore configure -e my_agent_memory.py
 # Select 'yes' for long-term memory extraction
 ```
 
+### Custom Header Configuration
+
+Select YES in *Request Header Allow list*, and in *Request Header Allow* paste  `X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id`
+
+![Request Header Allow list](../images/Request-Header-Allow-list.png)
+
+
+At the end `.bedrock_agentcore.yaml`, must looks like this: 
+
+```yaml
+request_header_configuration:
+  requestHeaderAllowlist:
+  - X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id
+```
+
+This header allows passing a user identifier from your application to the agent. The agent extracts it from `context.request_headers` (normalized to lowercase: `x-amzn-bedrock-agentcore-runtime-custom-actor-id`) and uses it to namespace memory per user.
+
 ## Step 4: Deploy to Production
 
 Launch the agent to production:
@@ -71,20 +88,24 @@ agentcore launch
 
 ## Step 5: Test Memory Functionality
 
-Use the `agentcore invoke` CLI command to test memory capabilities. The CLI supports `--session-id` and `--user-id` flags for testing different memory scenarios.
+Use the `agentcore invoke` CLI command to test memory capabilities. The CLI supports `--session-id` and `--headers` flags for testing different memory scenarios.
+
+**Important:** Session IDs must be at least 33 characters long.
 
 ### Test Short-term Memory (within session)
 
 Store information in a session:
 
 ```bash
-agentcore invoke --session-id session1-alice-memory-test-12345678 --user-id alice '{"prompt": "My name is Alice and I love pizza"}'
+agentcore invoke '{"prompt": "My name is Laura and I love banana"}' \
+  --session-id session1-laura-test-12345678901234 
 ```
 
 Recall information in the same session:
 
 ```bash
-agentcore invoke --session-id session1-alice-memory-test-12345678 --user-id alice '{"prompt": "What is my name and what do I love?"}'
+agentcore invoke '{"prompt": "What is my name and what do I love?"}' \
+  --session-id session1-laura-test-12345678901234 
 ```
 
 ### Test Long-term Memory (across sessions)
@@ -92,16 +113,25 @@ agentcore invoke --session-id session1-alice-memory-test-12345678 --user-id alic
 Store preferences in session 1:
 
 ```bash
-agentcore invoke --session-id session1-alice-memory-test-12345678 --user-id alice '{"prompt": "I prefer vegetarian food and work as a teacher"}'
+agentcore invoke '{"prompt": "I prefer vegetarian food and work as a teacher"}' \
+  --session-id session1-user456-test-1234567890123 \
+  --headers "X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id:user456"
 ```
 
-Wait a moment for long-term memory extraction, then test recall in different session:
+**Important:** Long-term memory extraction is an [asynchronous background process](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/long-term-saving-and-retrieving-insights.html#long-term-step-2-retrieve-extracted-insights) that can take a minute or more. Wait at least a few minutes before testing recall in a different session:
 
 ```bash
-agentcore invoke --session-id session2-alice-memory-test-87654321 --user-id alice '{"prompt": "What do you know about my food preferences and job?"}'
+agentcore invoke '{"prompt": "What do you know about my food preferences and job?"}' \
+  --session-id session2-user456-test-9876543210987 \
+  --headers "X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id:user456"
 ```
 
-Each command uses different session IDs to simulate different conversations, while the same user ID enables cross-session memory.
+**Key Points:**
+- Session IDs must be at least 33 characters long
+- Short-term memory works within a single session without needing the actor ID header
+- Long-term memory requires the custom header to identify users across different sessions
+- Long-term memory extraction is an [asynchronous process](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/long-term-saving-and-retrieving-insights.html#long-term-step-2-retrieve-extracted-insights) that can take a minute or more
+- Same custom header value enables cross-session memory for that user
 
 >The tests use the AWS SDK to call `bedrock-agentcore:InvokeAgentRuntime`, requiring your agent ARN and appropriate permissions.
 
@@ -155,19 +185,25 @@ agent = Agent(
 The `invoke` function is the main entry point for your AgentCore agent. It:
 
 - Receives user prompts and context from AgentCore Runtime
-- Extracts session and actor IDs for memory management
+- Extracts the custom header for user identification (normalized to lowercase)
 - Creates or retrieves the agent instance with memory configuration
 - Processes the user message and returns the response
 
 ```python
 @app.entrypoint
-def invoke(payload, context):
+def invoke(payload, context: RequestContext):
     """AgentCore Runtime entry point with lazy-loaded agent"""
     # Extract user prompt
     prompt = payload.get("prompt", "Hello!")
     
-    # Get session/actor info for memory
-    actor_id = context.request_headers.get('X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id', 'user')
+    # Extract actor_id from custom header (HTTP headers are lowercase)
+    actor_id = 'default-user'
+    if context and context.request_headers:
+        actor_id = context.request_headers.get(
+            'x-amzn-bedrock-agentcore-runtime-custom-actor-id', 
+            'default-user'
+        )
+    
     session_id = context.session_id
     
     # Get agent with memory
@@ -217,11 +253,13 @@ This script will test:
 - Cross-session memory recall
 - User-specific memory isolation
 
+**Note:** Long-term memory extraction is an [asynchronous background process](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/long-term-saving-and-retrieving-insights.html#long-term-step-2-retrieve-extracted-insights) that can take a minute or more. The test waits 10 seconds between invocations, but for reliable long-term memory retrieval, you may need to wait longer or run the second session separately after a few minutes.
+
 **Key Points for Memory Testing:**
 - **Agent ARN**: Get this from `agentcore status` output
 - **Session IDs**: Must be 33+ characters for proper session management
-- **User IDs**: Enable user-specific memory isolation
-- **Wait Time**: Allow time between sessions for long-term memory extraction
+- **Custom Headers**: Use boto3 event handlers with `X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id` for user-specific memory
+- **Long-term Memory Extraction**: An [asynchronous background process](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/long-term-saving-and-retrieving-insights.html#long-term-step-2-retrieve-extracted-insights) that can take a minute or more. For testing, wait a few minutes between storing and retrieving long-term memories
 
 ## Step 9: Clean Up
 

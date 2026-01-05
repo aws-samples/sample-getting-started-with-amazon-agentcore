@@ -1,4 +1,5 @@
 bedrock-agentcore
 bedrock-agentcore-starter-toolkit
 strands-agents
-strands-agents-tools 
+strands-agents-tools
+aws-opentelemetry-distro

@@ -5,15 +5,18 @@ Remembers conversations and user preferences across sessions
 import os
 from strands import Agent
 from strands_tools import calculator
-from bedrock_agentcore import BedrockAgentCoreApp
+from bedrock_agentcore import BedrockAgentCoreApp, RequestContext
 from bedrock_agentcore.memory.integrations.strands.config import AgentCoreMemoryConfig, RetrievalConfig
 from bedrock_agentcore.memory.integrations.strands.session_manager import AgentCoreMemorySessionManager
+import json
 
 app = BedrockAgentCoreApp()
 
 MEMORY_ID = os.getenv("BEDROCK_AGENTCORE_MEMORY_ID")
 REGION = os.getenv("AWS_REGION", "us-west-2")
 MODEL_ID = os.getenv("MODEL_ID", "us.anthropic.claude-3-7-sonnet-20250219-v1:0")
+# HTTP headers are normalized to lowercase
+CUSTOM_HEADER_NAME = 'x-amzn-bedrock-agentcore-runtime-custom-actor-id'
 
 # Global agent instance
 _agent = None
@@ -48,14 +51,28 @@ def get_or_create_agent(actor_id: str, session_id: str) -> Agent:
     return _agent
 
 @app.entrypoint
-def invoke(payload, context):
+def invoke(payload, context: RequestContext):
     """AgentCore Runtime entry point with lazy-loaded agent"""
+    app.logger.info("Payload: %s", payload)
+    app.logger.info("Context: %s", context)
+    
     if not MEMORY_ID:
         return {"error": "Memory not configured. Set BEDROCK_AGENTCORE_MEMORY_ID environment variable."}
+
+    # Extract custom header and session information
+    actor_id = 'default-user'
+    if context and hasattr(context, 'request_headers') and context.request_headers:
+        # Headers are normalized to lowercase
+        actor_id = context.request_headers.get(CUSTOM_HEADER_NAME)
+        app.logger.info("Request headers: %s", json.dumps(context.request_headers))
+        app.logger.info("Actor ID extracted from header '%s': %s", CUSTOM_HEADER_NAME, actor_id)
+    else:
+        app.logger.warning("No request headers found in context")
     
-    # Extract session and actor information
-    actor_id = context.request_headers.get('X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id', 'user') if context.request_headers else 'user'
-    session_id = context.session_id or 'default_session'
+    session_id = context.session_id
+    app.logger.info("Using actor_id='%s', session_id='%s'", actor_id, session_id)
+    print("actor_id: ", actor_id)
+    print("session_id: ", session_id)
     
     # Get or create agent (lazy loading)
     agent = get_or_create_agent(actor_id, session_id)
@@ -69,4 +86,3 @@ def invoke(payload, context):
 
 if __name__ == "__main__":
     app.run()
-
