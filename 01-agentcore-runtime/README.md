@@ -46,7 +46,7 @@ Before you begin, verify that you have:
 - **Model Access**: Anthropic Claude 3.5 Haiku (or the model of your preference) [enabled in the Amazon Bedrock console](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)
 
 > **New AWS customers receive up to $200 in credits**  
-> Get started at no cost with the [AWS Free Tier](https://aws.amazon.com/free/).
+> Get started at no cost with the [AWS Free Tier](https://aws.amazon.com/free/?trk=87c4c426-cddf-4799-a299-273337552ad8&sc_channel=el).
 
 ## Step 1: AWS Account Setup
 
@@ -238,7 +238,7 @@ agentcore launch
 This command:
 - Creates an IAM execution role with minimal required permissions
 - Builds your container using AWS CodeBuild (no Docker required locally)
-- Creates [Amazon ECR](https://aws.amazon.com/ecr/) repository
+- Creates [Amazon ECR](https://aws.amazon.com/ecr/?trk=87c4c426-cddf-4799-a299-273337552ad8&sc_channel=el) repository
 - Deploys your agent to Amazon Bedrock AgentCore Runtime
 - Configures CloudWatch logging
 
@@ -257,7 +257,7 @@ After deployment, view your resources in the AWS Console:
 | Resource | Location |
 |----------|----------|
 | Agent Logs | CloudWatch → Log groups → `/aws/bedrock-agentcore/runtimes/{agent-id}-DEFAULT` |
-| Container Images | ECR → Repositories → `bedrock-agentcore-{agent-name}` |
+| Container Images | [ECR](https://aws.amazon.com/ecr/?trk=87c4c426-cddf-4799-a299-273337552ad8&sc_channel=el) → Repositories → `bedrock-agentcore-{agent-name}` |
 | Build Logs | CodeBuild → Build history |
 | IAM Role | IAM → Roles → Search for "BedrockAgentCore" |
 
@@ -283,7 +283,7 @@ agentcore invoke '{"prompt": "Now multiply that result by 2"}'
 
 ## Step 8: Invoke from Production Applications
 
-For production applications, use the [InvokeAgentRuntime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html) operation from [AWS SDK](https://aws.amazon.com/what-is/sdk/). 
+For production applications, use the [InvokeAgentRuntime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html) operation from [AWS SDK](https://aws.amazon.com/what-is/sdk/?trk=87c4c426-cddf-4799-a299-273337552ad8&sc_channel=el). 
 
 ```python
     # Invoke the agent
