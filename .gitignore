@@ -45,9 +45,9 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# AgentCore generated files
-.bedrock_agentcore/
-.bedrock_agentcore.yaml
+# AgentCore CLI projects created while following the labs
+01-agentcore-runtime/CalculatorLab/
+02-agentcore-memory/MemoryLab/
 
 # Docker
 Dockerfile

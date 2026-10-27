@@ -99,7 +99,7 @@ def test_long_memory(agent_arn, region=None):
         print()
         
         # Wait for long-term memory extraction with progress feedback
-        wait_for_memory_propagation(60, "long-term memory creation and indexing")
+        wait_for_memory_propagation(120, "long-term memory creation and indexing")
     
         
         # Session 2: Test memory recall

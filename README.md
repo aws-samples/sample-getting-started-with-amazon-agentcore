@@ -33,21 +33,11 @@ Before starting any lab, ensure you have:
 - [AWS Account](https://aws.amazon.com/account/?trk=87c4c426-cddf-4799-a299-273337552ad8&sc_channel=el) with [appropriate permissions](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html)
 - Python 3.10+ installed
 - [AWS CLI configured](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [AgentCore CLI](https://github.com/aws/agentcore-cli) (`npm install -g @aws/agentcore`, requires Node.js 20.12+)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (the AgentCore CLI uses it to run and package Python agents)
 - Basic understanding of [AI agents](https://aws.amazon.com/what-is/ai-agents/?trk=87c4c426-cddf-4799-a299-273337552ad8&sc_channel=el) and [AWS services](https://aws.amazon.com/what-is-aws/?trk=87c4c426-cddf-4799-a299-273337552ad8&sc_channel=el)
 
-### Optional: Using uv for Python Project Management
-
-For faster Python dependency management, consider using [uv](https://docs.astral.sh/uv/) instead of traditional `pip` and `venv`:
-
-```bash
-# Install dependencies with uv (faster alternative to pip)
-uv pip install -r requirements.txt
-
-# Or initialize projects with uv
-uv init my-agent-project
-```
-
-This is optional - all labs work with standard `pip` commands as documented.
+> **Note:** These labs use the [AgentCore CLI](https://github.com/aws/agentcore-cli). The Python Bedrock AgentCore Starter Toolkit is no longer supported; if you have it installed, uninstall it (`pip uninstall bedrock-agentcore-starter-toolkit`) because both tools provide an `agentcore` command.
 
 ## Overview
 
@@ -61,7 +51,7 @@ This is optional - all labs work with standard `pip` commands as documented.
 
 | 📓 Services | 🎯 Focus & Key Learning | 🖼️ Diagram |
 |-------------|------------------------|-------------|
-| **Amazon Bedrock AgentCore Runtime** | **Focus**: [Serverless AI Agent Deployment](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-how-it-works.html)<br><br>Deploy production-ready AI agents with just 2 commands using AgentCore Runtime. This lab demonstrates:<br>• Serverless agent deployment with auto-scaling<br>• Session management and isolation<br>• Built-in security and authentication<br>• Integration with Strands Agents framework<br><br>**Key Learning**: Transform prototype agents into production-ready services in minutes, not weeks. | ![image](images/lab_01_runtime.png) |
+| **Amazon Bedrock AgentCore Runtime** | **Focus**: [Serverless AI Agent Deployment](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-how-it-works.html)<br><br>Deploy production-ready AI agents with a few AgentCore CLI commands using AgentCore Runtime. This lab demonstrates:<br>• Serverless agent deployment with auto-scaling<br>• Session management and isolation<br>• Built-in security and authentication<br>• Integration with Strands Agents framework<br><br>**Key Learning**: Transform prototype agents into production-ready services in minutes, not weeks. | ![image](images/lab_01_runtime.png) |
 | **Amazon Bedrock AgentCore Memory** | **Focus**: [Intelligent Memory Capabilities](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)<br><br>Add context-aware memory to AI agents using AgentCore Memory. This lab covers:<br>• Short-term memory for conversation context<br>• Long-term memory for user preferences<br>• Cross-session knowledge retention<br>• Personalized agent experiences<br><br>**Key Learning**: Build agents that remember and learn from interactions to provide more intelligent responses. | ![memory](images/high_level_memory.png) |
 
 ## Getting Started
@@ -81,7 +71,8 @@ Each lab includes:
 - [AgentCore Runtime How It Works](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-how-it-works.html)
 - [AgentCore Memory Guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)
 - [AgentCore Gateway Documentation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html)
-- [Programmatic Agent Invocation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-toolkit.html#invoke-programmatically)
+- [Invoke an AgentCore Runtime agent](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html)
+- [AgentCore CLI](https://github.com/aws/agentcore-cli)
 
 
 ### Code Examples

@@ -5,16 +5,17 @@ Remembers conversations and user preferences across sessions
 import os
 from strands import Agent
 from strands_tools import calculator
-from bedrock_agentcore import BedrockAgentCoreApp, RequestContext
+from bedrock_agentcore.runtime import BedrockAgentCoreApp, RequestContext
 from bedrock_agentcore.memory.integrations.strands.config import AgentCoreMemoryConfig, RetrievalConfig
 from bedrock_agentcore.memory.integrations.strands.session_manager import AgentCoreMemorySessionManager
-import json
 
 app = BedrockAgentCoreApp()
 
-MEMORY_ID = os.getenv("BEDROCK_AGENTCORE_MEMORY_ID")
+# The AgentCore CLI injects MEMORY_<NAME>_ID for each memory in the project.
+# This lab creates a memory named "LabMemory" (`agentcore add memory --name LabMemory`).
+MEMORY_ID = os.getenv("MEMORY_LABMEMORY_ID")
 REGION = os.getenv("AWS_REGION", "us-west-2")
-MODEL_ID = os.getenv("MODEL_ID", "us.anthropic.claude-3-7-sonnet-20250219-v1:0")
+MODEL_ID = os.getenv("MODEL_ID", "global.anthropic.claude-sonnet-5-5")
 # HTTP headers are normalized to lowercase
 CUSTOM_HEADER_NAME = 'x-amzn-bedrock-agentcore-runtime-custom-actor-id'
 
@@ -30,13 +31,14 @@ def get_or_create_agent(actor_id: str, session_id: str) -> Agent:
     
     if _agent is None:
         # Configure memory with retrieval for user facts and preferences
+        # relevance_score is the minimum similarity score; natural questions often score ~0.3-0.4
         memory_config = AgentCoreMemoryConfig(
             memory_id=MEMORY_ID,
             session_id=session_id,
             actor_id=actor_id,
             retrieval_config={
-                f"/users/{actor_id}/facts": RetrievalConfig(top_k=3, relevance_score=0.5),
-                f"/users/{actor_id}/preferences": RetrievalConfig(top_k=3, relevance_score=0.5)
+                f"/users/{actor_id}/facts": RetrievalConfig(top_k=3, relevance_score=0.2),
+                f"/users/{actor_id}/preferences": RetrievalConfig(top_k=3, relevance_score=0.2)
             }
         )
         
@@ -53,27 +55,18 @@ def get_or_create_agent(actor_id: str, session_id: str) -> Agent:
 @app.entrypoint
 def invoke(payload, context: RequestContext):
     """AgentCore Runtime entry point with lazy-loaded agent"""
-    app.logger.info("Payload: %s", payload)
-    app.logger.info("Context: %s", context)
-    
     if not MEMORY_ID:
-        return {"error": "Memory not configured. Set BEDROCK_AGENTCORE_MEMORY_ID environment variable."}
+        return {"error": "Memory not configured. Run `agentcore add memory --name LabMemory` and redeploy (sets MEMORY_LABMEMORY_ID)."}
 
     # Extract custom header and session information
     actor_id = 'default-user'
-    if context and hasattr(context, 'request_headers') and context.request_headers:
+    if context and context.request_headers:
         # Headers are normalized to lowercase
-        actor_id = context.request_headers.get(CUSTOM_HEADER_NAME)
-        app.logger.info("Request headers: %s", json.dumps(context.request_headers))
-        app.logger.info("Actor ID extracted from header '%s': %s", CUSTOM_HEADER_NAME, actor_id)
-    else:
-        app.logger.warning("No request headers found in context")
-    
+        actor_id = context.request_headers.get(CUSTOM_HEADER_NAME) or actor_id
+
     session_id = context.session_id
     app.logger.info("Using actor_id='%s', session_id='%s'", actor_id, session_id)
-    print("actor_id: ", actor_id)
-    print("session_id: ", session_id)
-    
+
     # Get or create agent (lazy loading)
     agent = get_or_create_agent(actor_id, session_id)
     

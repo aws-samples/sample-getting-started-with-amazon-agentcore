@@ -1,4 +1,4 @@
-from bedrock_agentcore import BedrockAgentCoreApp
+from bedrock_agentcore.runtime import BedrockAgentCoreApp
 from strands import Agent
 import os
 from strands_tools import calculator
@@ -6,13 +6,13 @@ from strands_tools import calculator
 # System prompt for the agent
 SYSTEM_PROMPT = "You are a helpful assistant that can perform calculations. Use the calculate tool for any math problems."
 
-# Model configuration from environment variable
-MODEL_ID = os.getenv("MODEL_ID", "us.anthropic.claude-3-5-haiku-20241022-v1:0")
+# Model configuration from environment variable (Amazon Bedrock model or inference profile ID)
+MODEL_ID = os.getenv("MODEL_ID", "global.anthropic.claude-sonnet-5-5")
 
 # Global agent instance for reuse across invocations
 agent = None
 
-# Initialize the Bedrock Agent Core application
+# Initialize the Bedrock AgentCore application
 app = BedrockAgentCoreApp()
 
 def create_agent(tools):
@@ -32,7 +32,7 @@ def invoke(payload):
     agent = create_agent(calculator)
     prompt = payload.get("prompt", "Hello!")
     result = agent(prompt)
-    
+
     return {
         "response": result.message.get('content', [{}])[0].get('text', str(result))
     }
