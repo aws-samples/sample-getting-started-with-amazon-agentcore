@@ -28,7 +28,7 @@ def get_or_create_agent(actor_id: str, session_id: str) -> Agent:
     Since the container is pinned to the session ID, we only need one agent per container.
     """
     global _agent
-    
+
     if _agent is None:
         # Configure memory with retrieval for user facts and preferences
         # relevance_score is the minimum similarity score; natural questions often score ~0.3-0.4
@@ -41,7 +41,7 @@ def get_or_create_agent(actor_id: str, session_id: str) -> Agent:
                 f"/users/{actor_id}/preferences": RetrievalConfig(top_k=3, relevance_score=0.2)
             }
         )
-        
+
         # Create agent with memory session manager
         _agent = Agent(
             model=MODEL_ID,
@@ -49,7 +49,7 @@ def get_or_create_agent(actor_id: str, session_id: str) -> Agent:
             system_prompt="You are a helpful assistant with memory. Remember user preferences and facts across conversations. Use the calculate tool for math problems.",
             tools=[calculator]
         )
-    
+
     return _agent
 
 @app.entrypoint
@@ -69,10 +69,10 @@ def invoke(payload, context: RequestContext):
 
     # Get or create agent (lazy loading)
     agent = get_or_create_agent(actor_id, session_id)
-    
+
     prompt = payload.get("prompt", "Hello!")
     result = agent(prompt)
-    
+
     return {
         "response": result.message.get('content', [{}])[0].get('text', str(result))
     }

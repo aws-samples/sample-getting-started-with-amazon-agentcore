@@ -33,6 +33,7 @@ Automatically extracts and stores key insights from conversations across multipl
 - [AWS Account](https://aws.amazon.com/account/?trk=87c4c426-cddf-4799-a299-273337552ad8&sc_channel=el) with [appropriate permissions](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html)
 - [AWS CLI configured](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 - [AgentCore CLI](https://github.com/aws/agentcore-cli) installed (`npm install -g @aws/agentcore`, requires Node.js 20.12+) and [uv](https://docs.astral.sh/uv/getting-started/installation/) — see [Lab 01](../01-agentcore-runtime/)
+- Python 3.10+ with `boto3` (`pip install boto3`) for the optional test scripts in Step 7
 - Basic understanding of [AI agents](https://aws.amazon.com/what-is/ai-agents/?trk=87c4c426-cddf-4799-a299-273337552ad8&sc_channel=el) and [AWS services](https://aws.amazon.com/what-is-aws/?trk=87c4c426-cddf-4799-a299-273337552ad8&sc_channel=el)
 
 ## Step 1: Navigate to Lab Directory
@@ -133,6 +134,7 @@ agentcore invoke --runtime memory_agent \
 - Long-term memory requires the custom header to identify users across different sessions
 - Long-term memory extraction is an [asynchronous process](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/long-term-saving-and-retrieving-insights.html#long-term-step-2-retrieve-extracted-insights) that can take a minute or more
 - Same custom header value enables cross-session memory for that user
+- Invocations without the header share the `default-user` actor, so facts extracted from other header-less tests (for example, Laura) can show up in their answers
 
 >The CLI calls `bedrock-agentcore:InvokeAgentRuntime` with your AWS credentials.
 

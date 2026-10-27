@@ -33,7 +33,7 @@ This project demonstrates **AgentCore Runtime** by building a calculator agent t
 
 1. **Amazon Bedrock AgentCore Runtime**: Provides a secure serverless runtime for deploying and scaling dynamic agents using any framework with any model provider.
 
-2. **Strands Agents**: An agent framework that build production-ready, multi-agent AI systems in a few lines of code. 
+2. **Strands Agents**: An agent framework that builds production-ready, multi-agent AI systems in a few lines of code. 
 
 3. **AgentCore CLI** (`@aws/agentcore`): The recommended tool to create, run locally, deploy, and invoke agents on AgentCore. It deploys your project with AWS CDK.
 
@@ -45,6 +45,7 @@ Before you begin, verify that you have:
 - **AWS CLI configured** with `aws configure`
 - **Node.js 20.12+** (for the AgentCore CLI)
 - **[uv](https://docs.astral.sh/uv/getting-started/installation/)** (the CLI uses it to run and package Python agents)
+- **Python 3.10+** with `boto3` (`pip install boto3`) to run the test script and notebook in Step 9
 - **AWS Permissions**: Attach the [BedrockAgentCoreFullAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/BedrockAgentCoreFullAccess.html) AWS managed policy. The CLI deploys with AWS CloudFormation (CDK), so your identity also needs permissions to deploy CloudFormation stacks and create IAM roles
 - **Model Access**: Anthropic Claude Sonnet (or the model of your preference) [enabled in the Amazon Bedrock console](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)
 
@@ -259,8 +260,8 @@ After deployment, view your resources in the AWS Console:
 | Resource | Location |
 |----------|----------|
 | Agent Logs | CloudWatch → Log groups → `/aws/bedrock-agentcore/runtimes/{agent-id}-DEFAULT` (or run `agentcore logs runtime --name calculator`) |
-| Deployment Stack | CloudFormation → Stacks |
-| IAM Role | IAM → Roles → Search for the stack name |
+| Deployment Stack | CloudFormation → Stacks → `AgentCore-CalculatorLab-default` |
+| IAM Role | CloudFormation → `AgentCore-CalculatorLab-default` → Resources |
 
 ## Step 8: Test Your Deployed Agent
 
@@ -305,10 +306,12 @@ Use [invoke_agent.py](invoke_agent.py) application to test the agent, or the [te
 Run the script to test both calculation capabilities and memory:
 
 ```bash
+pip install boto3
+
 # Set your agent ARN (get from agentcore status)
 export AGENT_ARN="YOUR-ARN"
 
-# Run the test script
+# Run the test script (from 01-agentcore-runtime/)
 python invoke_agent.py
 ```
 
@@ -348,10 +351,11 @@ agentcore add runtime --name anthropic_agent --language python
 cp ../agent_anthropic/main.py ../agent_anthropic/pyproject.toml app/anthropic_agent/
 ```
 
-Store your Anthropic API key as an AgentCore Identity credential. Write the key to a file (the CLI rejects inline values) and pass the file:
+Store your Anthropic API key as an AgentCore Identity credential. The CLI rejects inline values, so pass the key through a temporary file. `read -rs` keeps the key out of your shell history:
 
 ```bash
-printf '%s' "YOUR-ANTHROPIC-APIKEY" > anthropic.key
+read -rs ANTHROPIC_KEY   # paste your key and press Enter
+printf '%s' "$ANTHROPIC_KEY" > anthropic.key && unset ANTHROPIC_KEY
 agentcore add credentials api-key --name AnthropicKey --api-key file://anthropic.key
 rm anthropic.key
 ```
@@ -378,10 +382,9 @@ agentcore remove all --yes
 agentcore deploy --yes
 ```
 
-This removes:
+This deletes the `AgentCore-CalculatorLab-default` CloudFormation stack, including:
 - AgentCore Runtime deployment
 - Auto-created IAM roles
-- AgentCore Identity credentials created by the project
 
 The Runtime's CloudWatch log groups (`/aws/bedrock-agentcore/runtimes/...`) are kept. Delete them from the CloudWatch console if you don't need them.
 
