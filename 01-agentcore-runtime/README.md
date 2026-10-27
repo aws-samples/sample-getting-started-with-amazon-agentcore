@@ -58,6 +58,8 @@ Before you begin, verify that you have:
 
 If you're using admin access, you can skip the detailed permissions setup. Otherwise, follow [these steps to create an AWS IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) and attach the [BedrockAgentCoreFullAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/BedrockAgentCoreFullAccess.html) AWS managed policy.
 
+> **Security best practice:** Prefer temporary credentials with [IAM Identity Center](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html) (`aws configure sso`) over long-lived access keys, and use a non-production account for this lab.
+
 ### Configure the AWS CLI
 
 Run the following command in your terminal:
@@ -150,6 +152,8 @@ dependencies = [
     "bedrock-agentcore >= 1.18.1, < 2.0.0",
     "strands-agents >= 1.62.0, < 2.0.0",
     "strands-agents-tools >= 0.8.10, < 1.0.0",
+    # mcp 2.0.x-2.1.x are affected by CVE-2026-59951 (fixed in 1.30.0 and 2.2.0)
+    "mcp >= 1.30.0, != 2.0.*, != 2.1.*",
 ]
 ```
 

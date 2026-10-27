@@ -12,6 +12,8 @@ dependencies = [
     "bedrock-agentcore[strands-agents] >= 1.18.1, < 2.0.0",
     "strands-agents >= 1.62.0, < 2.0.0",
     "strands-agents-tools >= 0.8.10, < 1.0.0",
+    # mcp 2.0.x-2.1.x are affected by CVE-2026-59951 (fixed in 1.30.0 and 2.2.0)
+    "mcp >= 1.30.0, != 2.0.*, != 2.1.*",
 ]
 
 [tool.hatch.build.targets.wheel]

@@ -68,6 +68,8 @@ cp ../agent/main.py ../agent/pyproject.toml app/memory_agent/
 
 This header allows passing a user identifier from your application to the agent. The agent extracts it from `context.request_headers` (normalized to lowercase: `x-amzn-bedrock-agentcore-runtime-custom-actor-id`) and uses it to namespace memory per user.
 
+> **Security note:** In this lab any caller with permission to invoke the Runtime can set the actor ID header, and therefore read that user's memories. In production, derive the actor ID from a verified identity (for example, a claim in a JWT validated by an [inbound authorizer](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html)) instead of trusting a client-supplied header.
+
 ### Add AgentCore Memory
 
 Add a memory with long-term extraction strategies (facts, user preferences, and session summaries):
